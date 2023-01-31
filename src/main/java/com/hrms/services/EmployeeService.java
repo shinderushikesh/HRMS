@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.hrms.entity.Employee;
 import com.hrms.repository.EmployeeRespository;
@@ -48,6 +49,43 @@ public class EmployeeService {
 			return null;
 		}
 
+	}
+
+	public Employee addEmployee(Employee employee) {
+		// TODO Auto-generated method stub
+
+		if (employeeRespository.findByempCode(employee.getEmpCode()) != null)
+			throw new RuntimeException("The Employee code is already exits");
+
+		return employeeRespository.save(employee);
+	}
+
+	// get by Employee Code
+	public Employee getByEmployeeCode(String emp_cd) {
+		// TODO Auto-generated method stub
+		Session session = entityManager.unwrap(Session.class);
+		org.hibernate.Filter filter = session.enableFilter("deletedEmployeeFilter");
+		filter.setParameter("isDeleted", false);
+		Employee EmployeeEntity = employeeRespository.findByempCode(emp_cd);
+		session.disableFilter("deletedEmployeeFilter");
+		return EmployeeEntity;
+	}
+
+	// soft delete Employee
+	public void deleteEmployee(String emp_cd) {
+		// TODO Auto-generated method stub
+		Employee employeeDelete = getByEmployeeCode(emp_cd);
+		employeeDelete.setIsDeleted(true);
+		employeeRespository.save(employeeDelete);
+	}
+
+	//update Employee
+	public Employee updateEmp(Employee emp, String emp_cd) {
+		Employee updateEmployee = getByEmployeeCode(emp_cd);
+		if (updateEmployee != null) {
+			updateEmployee.setEmpName(emp.getEmpName());
+		}
+		return employeeRespository.save(updateEmployee);
 	}
 
 }

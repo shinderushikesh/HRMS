@@ -12,6 +12,7 @@ import com.hrms.entity.Employee;
 @Repository
 public interface EmployeeRespository extends JpaRepository<Employee, Integer>{
 	
+	public Employee findByempCode(String emp_cd);
 	
 	public Page<Employee> findAllByOrderByEmpIdDesc(Pageable paging);
 
