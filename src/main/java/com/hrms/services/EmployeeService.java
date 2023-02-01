@@ -34,7 +34,7 @@ public class EmployeeService {
 		Session session = entityManager.unwrap(Session.class);
 		org.hibernate.Filter filter = session.enableFilter("deletedEmployeeFilter");
 		filter.setParameter("isDeleted", false);
-		Pageable paging = PageRequest.of(pageNo - 1, pageSize);
+		Pageable paging = PageRequest.of(pageNo , pageSize);
 		Page<Employee> emp = employeeRespository.findAllByOrderByEmpIdDesc(paging);
 		employee = emp.getContent();
 		Map<String, Object> response = new HashMap<>();
