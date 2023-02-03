@@ -12,6 +12,8 @@
 #spring.security.oauth2.client.registration.google.client-id=368029334897-2fbahd99p3p5m9amh7v4t4gtpudhtns0.apps.googleusercontent.com
 #spring.security.oauth2.client.registration.google.client-secret=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
 
+
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
