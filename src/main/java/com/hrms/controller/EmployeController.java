@@ -1,11 +1,19 @@
 package com.hrms.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
-
 import javax.transaction.Transactional;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hrms.entity.Employee;
 import com.hrms.exception.CustomException;
 import com.hrms.services.EmployeeService;
+import com.hrms.utils.ExcelFileWriter;
+
+/**
+ * @author Rushikesh shinde
+ *
+ */
 
 @RestController
 @RequestMapping("/hrms/api")
@@ -96,5 +110,38 @@ public class EmployeController {
 		}
 
 	}
+	
+	//Export Employee
+	@GetMapping("employee/export")
+	public ResponseEntity<ByteArrayResource> downloadTemplate() throws Exception {
+		
+		try {
+			String columnNames[] = { "Employee Id", "Employee Name", "Employee Code", "Gender", "Date of Birth",
+					"Employee Nationality", "Employee Citizenship", "Marital Status", "Employee Spouse Name", "Employee Father Name", " Passport", "Employee passport No", "passport issue Place",
+					"Passport issue Date", "Passport expiry Date", "mobile number", "Alternate Mobile", "Email", "Current Address", "Permanent Address", "StayDuration", "Pin Code", "Adhar Number", "Pan Number",
+					"Old Employee Id", "designation", "From To", "Company Address", "leaving Reason", "School Name", "Period From", "Period To", "Percentage", "Hsc Or Diploma", "Collage Name", "Join From", "Period To",
+					"Specialization", "Percent", "university Name" , "Degree Period From", "Degree Period To", "Degree Specialization", "Degree Percentage" };
+			
+				List<Employee> entities = employeeService.getAllEmployeeNoPaged();
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+				String currentDateTime = dateFormatter.format(new Date());
+				String fileName = "employeeExport_" + currentDateTime + ".xlsx";
+				
+				XSSFWorkbook workbook  = ExcelFileWriter.writeToExcel(entities, columnNames); // creates the workbook
+				HttpHeaders header = new HttpHeaders();
+				header.setContentType(new MediaType("application", "force-download"));
+				header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+				workbook.write(stream);
+				workbook.close();
+				return new ResponseEntity<>(new ByteArrayResource(stream.toByteArray()), header, HttpStatus.CREATED);
+		} catch (Exception e) {
+			// TODO: handle exception
+//			logger.error(e.getMessage());'
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 
+   }
+	
 }

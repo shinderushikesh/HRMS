@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 import com.hrms.entity.Employee;
 import com.hrms.repository.EmployeeRespository;
 
+/**
+ * @author Rushikesh shinde
+ *
+ */
+
 @Service
 @Transactional
 public class EmployeeService {
@@ -34,7 +39,7 @@ public class EmployeeService {
 		Session session = entityManager.unwrap(Session.class);
 		org.hibernate.Filter filter = session.enableFilter("deletedEmployeeFilter");
 		filter.setParameter("isDeleted", false);
-		Pageable paging = PageRequest.of(pageNo , pageSize);
+		Pageable paging = PageRequest.of(pageNo - 1, pageSize);
 		Page<Employee> emp = employeeRespository.findAllByOrderByEmpIdDesc(paging);
 		employee = emp.getContent();
 		Map<String, Object> response = new HashMap<>();
@@ -79,13 +84,23 @@ public class EmployeeService {
 		employeeRespository.save(employeeDelete);
 	}
 
-	//update Employee
+	// update Employee
 	public Employee updateEmp(Employee emp, String emp_cd) {
 		Employee updateEmployee = getByEmployeeCode(emp_cd);
 		if (updateEmployee != null) {
 			updateEmployee.setEmpName(emp.getEmpName());
 		}
 		return employeeRespository.save(updateEmployee);
+	}
+
+	public List<Employee> getAllEmployeeNoPaged() {
+		// TODO Auto-generated method stub
+		List<Employee> employee = employeeRespository.findAll();
+		if (employee != null) {
+			return employee;
+		} else {
+			return null;
+		}
 	}
 
 }

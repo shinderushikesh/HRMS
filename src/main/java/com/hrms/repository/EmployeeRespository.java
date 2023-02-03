@@ -8,7 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import com.hrms.entity.Employee;
 
-//@EnableJpaRepositories
+/**
+ * @author Rushikesh shinde
+ *
+ */
+
+@EnableJpaRepositories
 @Repository
 public interface EmployeeRespository extends JpaRepository<Employee, Integer>{
 	

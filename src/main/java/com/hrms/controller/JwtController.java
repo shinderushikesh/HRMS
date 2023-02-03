@@ -72,13 +72,11 @@ public class JwtController {
 
 		if (reqUsername.equals(dbUsername) && reqPassword.equals(dbPassword) && (dbRole.getRole()).equals(reqRole)) {
 			// generate token
-
 			UserDetails userDetails = this.customUserDetailService.loadUserByUsername(jwtRequest.getUsername());
 			String token = this.jwtHelper.generateToken(userDetails);
 			System.out.println("Token:" + token);
 			return ResponseEntity.ok(new JwtResponse(token));
 		}
-
 		else {
 			return ResponseEntity.ok("username and password not found");
 		}

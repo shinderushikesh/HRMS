@@ -6,16 +6,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author Rushikesh shinde
+ *
+ */
 
 @Getter
 @Setter
@@ -27,8 +37,6 @@ import lombok.ToString;
 @Filter(name = "deletedEmployeeFilter", condition = "deleted = :isDeleted")
 @Table(name = "employee")
 public class Employee {
-	
-	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +46,7 @@ public class Employee {
 	// primary details
 	@Column(name = "emp_name")
 	private String empName;
-	
+
 	@Column(name = "emp_cd")
 	private String empCode;
 
@@ -69,8 +77,8 @@ public class Employee {
 	private String empFatherName;
 
 	@Column(name = "passport")
-	private boolean Passport;
-
+	private String passport;
+	
 	@Column(name = "passportNo")
 	private Integer passportNo;
 
@@ -180,8 +188,10 @@ public class Employee {
 	@Column(name = "degreePercentage")
 	private Integer degreePercentage;
 
+	// pending in excel sheet
+
 	@Column(name = "year_gap")
-	private boolean yrGap;
+	private String yrGap;
 
 	@Column(name = "gap_reason")
 	private String reason;
@@ -254,8 +264,7 @@ public class Employee {
 	@Column(name = "lastSalary1")
 	private String lastSalary1;
 
-	
-	//Employer 2//
+	// Employer 2//
 
 	@Column(name = "employerName2")
 	private String employerName2;
@@ -301,11 +310,19 @@ public class Employee {
 	@Column(name = "uanNumber")
 	private Integer uanNumber;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "crt_dt")
 	private Date createdDate;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "modi_dt")
 	private Date modifiedDate;
+
+	@PrePersist
+	private void onCreate() {
+		createdDate = new Date();
+		modifiedDate = new Date();
+	}
 
 	@Column(name = "crt_by")
 	private String createdBy;
